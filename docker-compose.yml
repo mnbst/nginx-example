@@ -1,0 +1,44 @@
+version: '3.5'
+services:
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    volumes:
+      - ./nginx/conf:/etc/nginx/conf.d
+      - ./nginx/uwsgi_params:/etc/nginx/uwsgi_params
+      - ./django/src/static:/static
+    ports:
+      - '80:80'
+    depends_on:
+      - django
+  django:
+    build: ./django
+    container_name: django
+    expose:
+      - '8001'
+    volumes:
+      - ./django/src:/code
+    command: uwsgi --socket :8001 --module app.wsgi
+    depends_on:
+      - db
+  django2:
+    build: ./django
+    container_name: django2
+    expose:
+      - '8002'
+    volumes:
+      - ./django/src:/code
+    command: uwsgi --socket :8002 --module app.wsgi
+    depends_on:
+      - db
+  db:
+    image: postgres:latest
+    container_name: db
+    volumes:
+      - ./db/dbdata:/var/lib/postgresql/data
+    expose:
+      - '5432'
+    environment:
+      - POSTGRES_USER=hogehoge
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=testDB
