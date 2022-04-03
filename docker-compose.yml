@@ -5,9 +5,9 @@ services:
     container_name: nginx
     volumes:
       - ./nginx/conf:/etc/nginx/conf.d
+      - ./nginx/ssl/:/etc/ssl/private
       - ./nginx/uwsgi_params:/etc/nginx/uwsgi_params
       - ./django/src/static:/static
-    command: certbot certonly --standalone -d
     ports:
       - '80:80'
     depends_on:
