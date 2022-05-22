@@ -2,7 +2,7 @@ db/*
 .idea
 nginx/ssl/*
 
-__pycache__/*
+/**/__pycache__/
 
 
 !.keep

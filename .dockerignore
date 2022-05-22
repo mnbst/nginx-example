@@ -1,0 +1,10 @@
+.git
+.gitignore
+.idea
+.docker
+django/__pycache__/
+django/*/__pycache__/
+django/*/*/__pycache__/
+django/*/*/*/__pycache__/
+
+db/dbdata

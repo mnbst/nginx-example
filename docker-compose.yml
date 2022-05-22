@@ -1,4 +1,4 @@
-version: '3.5'
+version: '3.8'
 services:
   nginx:
     image: nginx:latest
@@ -12,7 +12,7 @@ services:
       - '80:80'
     depends_on:
       - django
-  django:
+  django: &django
     build: ./django
     container_name: django
     expose:
@@ -22,16 +22,15 @@ services:
     command: uwsgi --socket :8001 --module app.wsgi --py-autoreload 1
     depends_on:
       - db
+    environment:
+      - SECRET_KEY=devsecretkey
+      - DEBUG=1
   django2:
-    build: ./django
+    <<: *django
     container_name: django2
     expose:
       - '8002'
-    volumes:
-      - ./django/src:/code
     command: uwsgi --socket :8002 --module app.wsgi --py-autoreload 1
-    depends_on:
-      - db
   db:
     image: postgres:latest
     container_name: db
