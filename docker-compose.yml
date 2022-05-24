@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3.9'
 services:
   nginx:
     image: nginx:latest
@@ -18,11 +18,12 @@ services:
     container_name: django
     volumes:
       - ./backend/src:/src
+      - ./data/web:/vol/web
     command: >
       sh -c "python manage.py wait_for_db &&
+             python manage.py makemigrations &&
              python manage.py migrate &&
-             uwsgi --socket :8000 --module app.wsgi --py-autoreload 1 --listen 1024 &&
-             sysctl -w net.core.somaxconn=65536"
+             uwsgi --socket :8000 --workers 4 --master --enable-threads --module app.wsgi"
     depends_on:
       - db
     environment:
@@ -33,6 +34,8 @@ services:
       - DB_USER=hogehoge
       - DB_PASS=password
       - DOCKER_DEFAULT_PLATFORM=linux/amd64
+    sysctls:
+      net.core.somaxconn: 65536
   django2:
     <<: *django
     container_name: django2
@@ -50,3 +53,4 @@ services:
       - POSTGRES_PASSWORD=password
       - POSTGRES_DB=testDB
       - DOCKER_DEFAULT_PLATFORM=linux/amd64
+    command: postgres -c stats_temp_directory=/tmp

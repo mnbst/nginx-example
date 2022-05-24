@@ -1,23 +1,46 @@
-version: '3.5'
+version: '3.9'
 services:
-  django:
-    build: ./django
-    container_name: django
-    expose:
-      - '8001'
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    restart: always
     volumes:
-      - ./django/src:/code
-    command: uwsgi --socket :8001 --module app.wsgi --py-autoreload 1
+      - static-data:/vol/static
+    ports:
+      - '80:8000'
+    depends_on:
+      - django
+  django:
+    platform: linux/amd64
+    build: ./backend
+    restart: always
+    container_name: django
+    volumes:
+      - static-data:/vol/web
     depends_on:
       - db
+    environment:
+      - DB_HOST=db
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
+      - SECRET_KEY=${SECRET_KEY}
+      - ALLOWED_HOSTS=${ALLOWED_HOSTS}
   db:
     image: postgres:latest
     container_name: db
+    restart: always
     volumes:
-      - ./db/dbdata:/var/lib/postgresql/data
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
     expose:
       - '5432'
     environment:
-      - POSTGRES_USER=hogehoge
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=testDB
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASS}
+      - DOCKER_DEFAULT_PLATFORM=linux/amd64
+volumes:
+  postgres-data:
+  static-data:
