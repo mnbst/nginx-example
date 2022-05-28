@@ -11,8 +11,12 @@ services:
     depends_on:
       - django
   django:
+    env_file:
+      - .env
     platform: linux/amd64
-    build: ./backend
+    build:
+      context: ./backend
+      dockerfile: DockerfileProd
     restart: always
     container_name: django
     volumes:

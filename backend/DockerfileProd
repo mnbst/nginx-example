@@ -1,5 +1,14 @@
 FROM python:3.10.4-slim-buster
-LABEL maintainer="awsdevelopper.com"
+LABEL maintainer="django-demo.com"
+
+ENV DB_HOST=db
+ENV DB_NAME=$DB_NAME
+ENV DB_USER=$DB_USER
+ENV DB_PASS=$DB_PASS
+ENV SECRET_KEY=$SECRET_KEY
+ENV ALLOWED_HOSTS=$ALLOWED_HOSTS
+
+
 ENV PYTHONUNBUFFERED 1
 
 RUN mkdir /src
@@ -24,11 +33,10 @@ RUN python -m venv /py &&\
     chmod -R 755 /vol &&\
     chmod -R +x /scripts
 
+EXPOSE 8000
+
 ENV PATH="/scripts:/py/bin:$PATH"
 
 USER app
 
 CMD ["run.sh"]
-
-
-aws ecr create-repository --repository-name django-demo --image-scanning-configuration scanOnPush=true --region asia-north-east-1
