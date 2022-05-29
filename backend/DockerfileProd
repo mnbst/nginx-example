@@ -1,7 +1,7 @@
 FROM python:3.10.4-slim-buster
 LABEL maintainer="django-demo.com"
 
-ENV DB_HOST=db
+ENV DB_HOST=$DB_HOST
 ENV DB_NAME=$DB_NAME
 ENV DB_USER=$DB_USER
 ENV DB_PASS=$DB_PASS
