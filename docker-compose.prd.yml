@@ -5,9 +5,12 @@ services:
     container_name: nginx
     restart: always
     volumes:
+      - ./nginx/conf:/etc/nginx/conf.d
+      - ./nginx/ssl/:/etc/ssl/private
+      - ./nginx/uwsgi_params:/etc/nginx/uwsgi_params
       - static-data:/vol/static
     ports:
-      - '80:8000'
+      - '80:80'
     depends_on:
       - django
   django:
@@ -31,6 +34,7 @@ services:
       - SECRET_KEY=${SECRET_KEY}
       - ALLOWED_HOSTS=${ALLOWED_HOSTS}
   db:
+    platform: linux/amd64
     image: postgres:latest
     container_name: db
     restart: always

@@ -10,12 +10,13 @@ COPY scripts /scripts
 
 RUN apt-get -y update &&\
     apt-get -y upgrade &&\
-     apt-get -y install libpq-dev gcc &&\
+     apt-get -y install libpq-dev gcc build-essential &&\
      apt-get check &&\
      apt-get clean
 
 RUN python -m venv /py &&\
     /py/bin/pip install --upgrade pip &&\
+    /py/bin/pip install wheel &&\
     /py/bin/pip install --no-cache-dir -r /src/requirements.txt &&\
     adduser --disabled-password --no-create-home app &&\
     mkdir -p /vol/web/static &&\
@@ -27,8 +28,3 @@ RUN python -m venv /py &&\
 ENV PATH="/scripts:/py/bin:$PATH"
 
 USER app
-
-CMD ["run.sh"]
-
-
-aws ecr create-repository --repository-name django-demo --image-scanning-configuration scanOnPush=true --region asia-north-east-1
