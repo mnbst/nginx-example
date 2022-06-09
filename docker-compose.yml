@@ -12,7 +12,7 @@ services:
       - '80:80'
     depends_on:
       - django
-  django: &django
+  django:
     platform: linux/amd64
     build: ./backend
     container_name: django
@@ -36,9 +36,6 @@ services:
       - DOCKER_DEFAULT_PLATFORM=linux/amd64
     sysctls:
       net.core.somaxconn: 65536
-  django2:
-    <<: *django
-    container_name: django2
   db:
     image: postgres:latest
     container_name: db

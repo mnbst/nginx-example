@@ -24,6 +24,7 @@ services:
     container_name: django
     volumes:
       - static-data:/vol/web
+      - ./data/web:/vol/web
     depends_on:
       - db
     environment:
